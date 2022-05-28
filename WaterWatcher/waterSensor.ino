@@ -1,18 +1,36 @@
-int waterSensorRead(){
-  
-    int sensorRead = digitalRead(SENSOR);
-    if (sensorRead == 1) {
-      lastSensorRead = millis();
-      long diff = lastSensorRead - previousSensorRead;
-      waterClicks[waterClicksInx++] = diff;
-      if (waterClicksInx ==500 - 1) waterClicksInx == 0;
-      logThis(2,String(diff));
-      previousSensorRead = lastSensorRead;
+void IRAM_ATTR waterSensorRead() {
+
+  if (digitalRead(SENSOR)) {
+
+    long diff = millis() - lastSensorRead;
+
+    if (diff > tooLongInterval) {
+      lastSensorRead = millis();;
+      return;
     }
-    LiveSignalPreviousMillis = millis();
-    
-    
-  
-  
-  return 0;
+
+    if (diff < tooShortInterval) return;
+
+    waterClicks[waterClicksInx++] = diff;
+
+    lastSensorRead = millis();
+
+    digitalWrite(LED_BUILTIN, HIGH);
+    Serial.println(diff);
+
+    if (waterClicksInx == logChunkSize)
+    {
+      String diffs = "WaterReads:";
+      for (int i = 0; i < waterClicksInx; i++) {
+        diffs = diffs + waterClicks[i] + "$";
+      }
+      logThis(0, diffs, 2);
+      waterClicksInx = 0;
+    }
+    return;
+  }
+
+  if ((millis() - lastSensorRead) > 100) digitalWrite(LED_BUILTIN, LOW);
+
+  return;
 }

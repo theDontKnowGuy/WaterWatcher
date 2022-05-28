@@ -1,4 +1,4 @@
-int networklogThis(String message, bool asProxy = false)
+int networklogThis(String message, bool asProxy)
 {
 
   if (logTarget == "")
@@ -59,8 +59,6 @@ int networklogThis(String message, bool asProxy = false)
   return 0;
 }
 
-
-
 void logThis(String strMessage)
 {
   logThis(0, strMessage, 2);
@@ -120,6 +118,8 @@ void logThis(int debuglevel, String strMessage, int newLineHint)
       addFakeSec = 0;
   }
 
+
+
   String t;
   if (loggingType == 1) t = String(timeinfo.tm_year + 1900) + "-" + String(timeinfo.tm_mon + 1) + "-" + String(timeinfo.tm_mday) + "T" + String(timeinfo.tm_hour) + ":" + String(timeinfo.tm_min) + ":" + String(addFakeSec) + "-0000";
   if (loggingType == 3) t = String(timeinfo.tm_year + 1900) + "/" + String(timeinfo.tm_mon + 1) + "/" + String(timeinfo.tm_mday) + " " + String(timeinfo.tm_hour) + ":" + String(timeinfo.tm_min) + ":" + String(addFakeSec);
@@ -135,7 +135,7 @@ void logThis(int debuglevel, String strMessage, int newLineHint)
                 String(millis() - previousTimeStamp) + "," + //8
                 (float)debuglevel / 10 + "," +               //lon
                 (float)ConfigurationVersion / 10.0 + "," +   //lat
-                String((t, isServer) ? "1" : "0") + ",";     //elev
+                String((t, isServer) ? "1" : "0") + "," ;    //elev
 
   //add headers is new or ended previous msg with |
 

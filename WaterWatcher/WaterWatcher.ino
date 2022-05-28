@@ -1,14 +1,7 @@
-
-int waterClicks[500];
-int waterClicksInx = 0;
-#define SENSOR 15
-long lastSensorRead, previousSensorRead;
-
 /*
-   GreenPlanet by theDontKnowGuy
+   WaterWatcher by theDontKnowGuy
 
-   Control programmable IR remote controls
-   Version 2.0 - Webserver goes to a seperate core to give a quicker service to clients
+   Monitor fertelizer pump for
    Version 1.0 - Basic functionality works
 */
 
@@ -19,7 +12,7 @@ long lastSensorRead, previousSensorRead;
 #define RELEASE true
 #define SERVER
 const int FW_VERSION = 2020080701;
-int DEBUGLEVEL = 5;     // set between 0 and 5. This value will be overridden by dynamic network configuration json if it has a higher value
+int DEBUGLEVEL = 2;     // set between 0 and 5. This value will be overridden by dynamic network configuration json if it has a higher value
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -275,6 +268,16 @@ int inxParticipatingPlans = 0;
 int inxParticipatingIRCodes = 0;
 int recessTime = 160; // between executions, not to repeat same exection until clock procceeds
 
+
+
+int waterClicks[500];
+int waterClicksInx = 0;
+#define SENSOR 15
+long lastSensorRead =0 , previousSensorRead;
+int logChunkSize = 10;
+int tooLongInterval =3000;
+int tooShortInterval = 100;
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////// SERVER CONFIGURATION /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -287,6 +290,9 @@ String serverConfiguration = "";
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////// END OF DECLERATION /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void IRAM_ATTR waterSensorRead();
+int networklogThis(String message, bool asProxy = false);
 
 void setup()
 {
@@ -355,13 +361,13 @@ void setup()
   logThis(1, "Temperature: " + String(DHTt) + " Humidity: " + String(DHTh));
   logThis(3, "Initialization Completed.", 3);
   digitalWrite(blue, LOW); // system live indicator
-    
-//if (networklogThis(networkLogBuffer) == 0)
-//    {
-//      networkLogBuffer = "";
-//      logAge = 0;
-//    }
-    
+
+  if (networklogThis(networkLogBuffer) == 0)
+      {
+        networkLogBuffer = "";
+        logAge = 0;
+      }
+
 #if defined(SERVER)
 
   xTaskCreatePinnedToCore(
@@ -369,7 +375,7 @@ void setup()
     ,
     7000 // This stack size can be checked & adjusted by reading the Stack Highwater
     ,
-    NULL, 0 // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+    NULL, 3 // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
     ,
     NULL, 1);
 
@@ -378,7 +384,7 @@ void setup()
     ,
     7000 // This stack size can be checked & adjusted by reading the Stack Highwater
     ,
-    NULL, 3 // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+    NULL, 0 // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
     ,
     NULL, 0);
 
@@ -390,8 +396,13 @@ void setup()
   }
   gotoSleep(calcTime2Sleep()); ///is this order right ????????
 #endif
-} //setup
 
+
+attachInterrupt(SENSOR, waterSensorRead, RISING);
+
+
+
+} //setup
 
 #if defined(SERVER)
 void webServerFunction(void *pvParameters) {
@@ -399,6 +410,7 @@ void webServerFunction(void *pvParameters) {
   (void) pvParameters;
   for (;;) {
     server.handleClient();
+    blinkLiveLed();
     vTaskDelay(10 / portTICK_RATE_MS);
     timerWrite(timer, 0); //reset timer (feed watchdog)
   }
@@ -408,7 +420,7 @@ void serverOtherFunctions(void *pvParameters) {
 
   (void) pvParameters;
   for (;;) {
-    blinkLiveLed();
+   // waterSensorRead();
     timerWrite(timer, 0); //reset timer (feed watchdog)
     vTaskDelay(10 / portTICK_RATE_MS);
   }
@@ -417,6 +429,8 @@ void serverOtherFunctions(void *pvParameters) {
 
 void loop()
 {
-  vTaskDelay(10 / portTICK_RATE_MS);
-  timerWrite(timer, 0);
+  //    waterSensorRead();
+
+ // vTaskDelay(10 / portTICK_RATE_MS);
+  //timerWrite(timer, 0);
 }
