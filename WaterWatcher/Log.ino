@@ -1,3 +1,65 @@
+int networklogThis(String message, bool asProxy = false)
+{
+
+  if (logTarget == "")
+    return 0; //value empty - network logging off
+  if (DEBUGLEVEL == 6)
+    return 0;
+  timerWrite(timer, 0); //reset timer (feed watchdog)
+  NetworkResponse myNetworkResponse;
+
+  String m;
+
+  switch (loggingType)
+  {
+    case 1: ///  thingspeak
+
+      message.replace("1900-1-0T0", "1900-1-1T");
+      message = "write_api_key=NGOL1T65IJHKTURU&time_format=absolute&updates=" + message;
+      myNetworkResponse = httpSecurePost(loggerHost, 443, logTarget, message, "HTTP/1.1 202 Accepted");
+
+      break;
+
+    case 2: //// PHPSERVER
+
+
+      // message.replace("\n", " | ");
+      m = "msg=" + message;
+
+      myNetworkResponse = httpRequest(loggerHost, loggerHostPort, "POST", logTarget, m, "Logged successfully", 0);
+
+      break;
+
+    case 3: //// IFTTT
+
+      Serial.println(loggerHost);
+      myNetworkResponse = httpRequest(loggerHost, loggerHostPort, "POST", logTarget, "{\"value1\":\"" + message + "\"}", "Congratulations! You've", 0);
+
+      break;
+  }
+
+  if (myNetworkResponse.resultCode == 0)
+  {
+    failedLogging2NetworkCounter = 0;
+    logThis(2, "Log sent and received successfully.", 3);
+  }
+  else
+  {
+    logThis(1, "FAILED LOGGING TO NETWORK", 3);
+    digitalWrite(red, HIGH);
+    vTaskDelay(60);
+    digitalWrite(red, LOW);
+    RTCpanicStateCode = 3;
+    failedLogging2NetworkCounter++;
+    if (failedLogging2NetworkCounter == 5)
+      boardPanic(2);
+    return 1;
+  }
+  if (readEEPROM(1) == "PANIC=2") writeString(1, "PANIC=0");
+  return 0;
+}
+
+
 
 void logThis(String strMessage)
 {
@@ -106,65 +168,4 @@ void logThis(int debuglevel, String strMessage, int newLineHint)
     networkLogBuffer += "|";
 
   return;
-}
-
-int networklogThis(String message, bool asProxy = false)
-{
-
-  if (logTarget == "")
-    return 0; //value empty - network logging off
-  if (DEBUGLEVEL == 6)
-    return 0;
-  timerWrite(timer, 0); //reset timer (feed watchdog)
-  NetworkResponse myNetworkResponse;
-
-  String m;
-
-  switch (loggingType)
-  {
-    case 1: ///  thingspeak
-
-      message.replace("1900-1-0T0", "1900-1-1T");
-      message = "write_api_key=NGOL1T65IJHKTURU&time_format=absolute&updates=" + message;
-      myNetworkResponse = httpSecurePost(loggerHost, 443, logTarget, message, "HTTP/1.1 202 Accepted");
-
-      break;
-
-    case 2: //// PHPSERVER
-
-
-      // message.replace("\n", " | ");
-      m = "msg=" + message;
-
-      myNetworkResponse = httpRequest(loggerHost, loggerHostPort, "POST", logTarget, m, "Logged successfully", 0);
-
-      break;
-
-    case 3: //// IFTTT
-
-      Serial.println(loggerHost);
-      myNetworkResponse = httpRequest(loggerHost, loggerHostPort, "POST", logTarget, "{\"value1\":\"" + message + "\"}", "Congratulations! You've", 0);
-
-      break;
-  }
-
-  if (myNetworkResponse.resultCode == 0)
-  {
-    failedLogging2NetworkCounter = 0;
-    logThis(2, "Log sent and received successfully.", 3);
-  }
-  else
-  {
-    logThis(1, "FAILED LOGGING TO NETWORK", 3);
-    digitalWrite(red, HIGH);
-    vTaskDelay(60);
-    digitalWrite(red, LOW);
-    RTCpanicStateCode = 3;
-    failedLogging2NetworkCounter++;
-    if (failedLogging2NetworkCounter == 5)
-      boardPanic(2);
-    return 1;
-  }
-  if (readEEPROM(1) == "PANIC=2") writeString(1, "PANIC=0");
-  return 0;
 }

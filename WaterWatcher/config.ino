@@ -178,53 +178,7 @@ int parseConfiguration(JSONVar eyeConfig) {
 
   //refactor to support more than 10 plans
 
-  while (JSON.typeof(eyeConfig["operationPlans"][j]) == "object") {
 
-    if (memberInOperationPlans.indexOf(JSON.stringify(eyeConfig["operationPlans"][j]["operationPlanID"])) >= 0 ) {
-
-      myOperationPlans[i].operationPlanID =     eyeConfig["operationPlans"][j]["operationPlanID"];
-      myOperationPlans[i].operationPlanName =   JSON.stringify(eyeConfig["operationPlans"][j]["operationPlanName"]);
-      myOperationPlans[i].IRcodeID =            eyeConfig["operationPlans"][j]["IRcodeID"];
-      myOperationPlans[i].hour =                eyeConfig["operationPlans"][j]["hour"];
-      myOperationPlans[i].minute =              eyeConfig["operationPlans"][j]["minute"];
-      myOperationPlans[i].weekdays =            eyeConfig["operationPlans"][j]["weekdays"];
-
-      i++;
-    }
-    j++;
-  }
-  inxParticipatingPlans = i ;
-  logThis(3, "Participating in " + String(inxParticipatingPlans) + " plans.", 2);
-
-  i = 0;
-
-  while (JSON.typeof(eyeConfig["IRcode"][i])   == "object")
-  {
-
-    myIRcode[i].IRcodeID = eyeConfig["IRcode"][i]["IRcodeID"];
-    myIRcode[i].IRtype = eyeConfig["IRcode"][i]["IRtype"];
-    myIRcode[i].IRcodeDescription =   JSON.stringify(eyeConfig["IRcode"][i]["IRcodeDescription"]);
-
-    if (myIRcode[i].IRtype == 1) {
-
-      int l = 0;
-      while ((int)eyeConfig["IRcode"][i]["IRCodeBitStream"][l] > 0) {
-        myIRcode[i].IRCodeBitStream[l] =  (int)eyeConfig["IRcode"][i]["IRCodeBitStream"][l];
-        l++;
-      }
-      myIRcode[i].IRCodeBitStreamLength = l;
-      //logThis(2, "IR plan code " + String(i) + " loaded with length of " + String(l) + " bits",2);
-
-    }
-    if (myIRcode[i].IRtype == 2) {
-      myIRcode[i].ACprotocol = eyeConfig["IRcode"][i]["ACprotocol"];
-      myIRcode[i].targetTemp = eyeConfig["IRcode"][i]["targetTemp"];
-      myIRcode[i].power = eyeConfig["IRcode"][i]["power"];
-    }
-    i++;
-  }
-
-  inxParticipatingIRCodes = i;
 
   j = 0;
   while (JSON.typeof(eyeConfig["sleepPlans"][j]) == "object") {

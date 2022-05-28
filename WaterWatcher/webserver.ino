@@ -81,15 +81,7 @@ void startWebServer()
     Serial.println("end proxy proxy");
   });
 
-  server.on("/executePlan/{}", []() {
-    String arg1 = server.pathArg(0);
-    int IRcodeID;
-    IRcodeID = arg1.toInt();
-    String message = "";
-    int r = execPlan(IRcodeID);
-    message = "Consider it done for plan " + String(IRcodeID);
-    server.send(200, "text/plain", message);
-  });
+
 
   server.on("/reboot", []() {
     logThis(1, "reboot per webserver order");
@@ -97,20 +89,13 @@ void startWebServer()
     ESP.restart();
   });
 
-  server.on("/testIR", []() {
-    handleTestIR();
-  });
+
 
   server.on("/testColors", []() {
     handleTestColors();
   });
 
-  server.on("/learn", []() {
-    learnCode();
-  });
-  server.on("/testWeed", []() {
-    testWeed();
-  });
+ 
   server.onNotFound(handleNotFound);
 }
 
@@ -150,53 +135,6 @@ void handleNotFound()
 }
 
 
-void handleTestIR()
-{
-
-
-  char body[100] = "Running Test";
-  server.send(200, "text/html", body);
-
-  Serial.println("long ir seq");
-
-  for (int k = 0; k < 5; k++) {
-    //    for (int i = 0; i < 8; i++) {
-    //      digitalWrite(blue, HIGH);
-    //  //    digitalWrite(kIrLed, HIGH);
-    //      vTaskDelay(2000);
-    //      timerWrite(timer, 0); //reset timer (feed watchdog)
-    //      digitalWrite(blue, LOW);
-    //      digitalWrite(kIrLed, LOW);
-    //      vTaskDelay(500);
-    //    }
-
-    digitalWrite(red, HIGH);
-    vTaskDelay(500);
-    digitalWrite(red, LOW);
-    vTaskDelay(500);
-    timerWrite(timer, 0); //reset timer (feed watchdog)
-
-    Serial.println(kIrLed);
-
-    for (int i = 0; i < 2; i++) {
-      execPlan(4);//enable interrupt
-      timerWrite(timer, 0); //reset timer (feed watchdog)
-
-    }
-
-    digitalWrite(red, HIGH);
-    vTaskDelay(500);
-    digitalWrite(red, LOW);
-
-    digitalWrite(red, HIGH);
-    vTaskDelay(1000);
-    digitalWrite(red, LOW);
-
-    timerWrite(timer, 0); //reset timer (feed watchdog)
-
-  }
-}
-
 
 void handleTestColors()
 {
@@ -230,30 +168,4 @@ void handleTestColors()
     vTaskDelay(500);
   }
 }
-void testWeed() {
-  digitalWrite(blue , LOW);
-  Serial.println("weed seq");
-  digitalWrite(green, HIGH);
-  vTaskDelay(500);
-  digitalWrite(green , LOW);
-  vTaskDelay(500);
-  digitalWrite(green, HIGH);
-  vTaskDelay(500);
-  digitalWrite(green , LOW);
-  vTaskDelay(500);
-  digitalWrite(green, HIGH);
-  vTaskDelay(500);
-  digitalWrite(green , LOW);
-  vTaskDelay(500);
-  digitalWrite(green, HIGH);
-  vTaskDelay(500);
-  digitalWrite(green , LOW);
-  vTaskDelay(500);
-  digitalWrite(green, HIGH);
-  vTaskDelay(500);
-  digitalWrite(green , LOW);
-  vTaskDelay(500);
-
-}
-
 #endif

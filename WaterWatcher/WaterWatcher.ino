@@ -28,7 +28,7 @@ int DEBUGLEVEL = 5;     // set between 0 and 5. This value will be overridden by
 
 
 #include <HTTPUpdate.h>                                                                /// year_month_day_counternumber 2019 is the year, 04 is the month, 17 is the day 01 is the in day release
-const char *fwUrlBase = "https://raw.githubusercontent.com/theDontKnowGuy/GreenPlanet/master/fota/"; /// put your server URL where the *.bin & version files are saved in your http ( Apache? ) server
+const char *fwUrlBase = "https://raw.githubusercontent.com/theDontKnowGuy/WaterWatcher/master/fota/"; /// put your server URL where the *.bin & version files are saved in your http ( Apache? ) server
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -131,11 +131,11 @@ char *serverDataUpdateHost = "raw.githubusercontent.com";
 int serverDataUpdatePort = 443;
 
 #if (RELEASE)
-String serverDataUpdateURI = "/theDontKnowGuy/GreenPlanet/master/configuration/GreenPlanetConfig.json";
-String dataUpdateURI_fallback = "/theDontKnowGuy/GreenPlanet/master/configuration/GreenPlanetConfig.json"; /// see example json file in github. leave
+String serverDataUpdateURI = "/theDontKnowGuy/WaterWatcher/master/configuration/WaterWatcher.json";
+String dataUpdateURI_fallback = "/theDontKnowGuy/WaterWatcher/master/configuration/WaterWatcher.json"; /// see example json file in github. leave
 #else
-String serverDataUpdateURI = "/theDontKnowGuy/GreenPlanet/master/configuration/GreenPlanetConfig_dev.json";
-String dataUpdateURI_fallback = "/theDontKnowGuy/GreenPlanet/master/configuration/GreenPlanetConfig_dev.json"; /// see example json file in github. leave
+String serverDataUpdateURI = "/theDontKnowGuy/WaterWatcher/master/configuration/WaterWatcher_dev.json";
+String dataUpdateURI_fallback = "/theDontKnowGuy/WaterWatcher/master/configuration/WaterWatcher_dev.json"; /// see example json file in github. leave
 #endif
 
 char *dataUpdateHost_fallback = "raw.githubusercontent.com";
@@ -270,32 +270,6 @@ String deviceLocation = "default";  // same idea
 String memberInOperationPlans = ""; // same idea
 String MACID;                       // MAC address converted to long
 
-typedef struct
-{
-  int operationPlanID;
-  String operationPlanName;
-  int IRcodeID;
-  int hour;
-  int minute;
-  String weekdays;
-  long recentExecution = 0;
-} operationPlans;
-operationPlans myOperationPlans[10];
-
-typedef struct
-{
-  int IRcodeID;
-  int IRtype;
-  String IRcodeDescription;
-  uint16_t IRCodeBitStream[300];
-  int IRCodeBitStreamLength;
-  int GreenPlanetProtocolType;
-  int ACprotocol;
-  int targetTemp;
-  int power;
-} IRcode;
-
-IRcode myIRcode[20];
 
 int inxParticipatingPlans = 0;
 int inxParticipatingIRCodes = 0;
@@ -381,12 +355,12 @@ void setup()
   logThis(1, "Temperature: " + String(DHTt) + " Humidity: " + String(DHTh));
   logThis(3, "Initialization Completed.", 3);
   digitalWrite(blue, LOW); // system live indicator
-
-if (networklogThis(networkLogBuffer) == 0)
-    {
-      networkLogBuffer = "";
-      logAge = 0;
-    }
+    
+//if (networklogThis(networkLogBuffer) == 0)
+//    {
+//      networkLogBuffer = "";
+//      logAge = 0;
+//    }
     
 #if defined(SERVER)
 
@@ -409,7 +383,7 @@ if (networklogThis(networkLogBuffer) == 0)
     NULL, 0);
 
 #else
-  planDispatcher();
+  ;
   if (wakeup_reason == ESP_SLEEP_WAKEUP_TOUCHPAD) {
     logThis(1, "Executing Plan becuase woke up by touchpad", 2);  // on wakeup by touchpad - play ir plan for testing
     execPlan(3);
@@ -434,7 +408,6 @@ void serverOtherFunctions(void *pvParameters) {
 
   (void) pvParameters;
   for (;;) {
-    planDispatcher();
     blinkLiveLed();
     timerWrite(timer, 0); //reset timer (feed watchdog)
     vTaskDelay(10 / portTICK_RATE_MS);
