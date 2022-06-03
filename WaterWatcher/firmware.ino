@@ -25,7 +25,10 @@ int checkForFirmwareUpdates(int newFWVersion)
   }
 
   WiFiClientSecure *client = new WiFiClientSecure;
+  client->setInsecure();//skip verification
+
   HTTPClient httpClient;
+
   httpClient.begin(*client, fwImageURL);
   //  int httpCode = httpClient.GET();
   timerWrite(timer, 0);                                 //reset timer (feed watchdog)

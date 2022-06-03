@@ -90,12 +90,60 @@ void startWebServer()
   });
 
 
+  server.on("/upgrade", HTTP_GET, []() {
+    const char* serverIndex = "<form method='POST' action='/update' enctype='multipart/form-data'><input type='file' name='update'><input type='submit' value='Update'></form>";
+    server.sendHeader("Connection", "close");
+    server.send(200, "text/html", serverIndex);
+  });
+
+  server.on("/update", HTTP_POST, []() {
+    timerWrite(timer, 0);                                 //reset timer (feed watchdog)
+    timerAlarmWrite(timer, wdtTimeout * 1000 * 500, false); //set time in us
+    timerAlarmEnable(timer);                              //enable interrupt
+    timerAlarmDisable(timer);                             
+
+    server.sendHeader("Connection", "close");
+    server.send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
+    ESP.restart();
+  }, []() {
+    HTTPUpload& upload = server.upload();
+    if (upload.status == UPLOAD_FILE_START) {
+      Serial.setDebugOutput(true);
+      Serial.printf("Update: %s\n", upload.filename.c_str());
+      if (!Update.begin()) { //start with max available size
+        Update.printError(Serial);
+      }
+    } else if (upload.status == UPLOAD_FILE_WRITE) {
+      if (Update.write(upload.buf, upload.currentSize) != upload.currentSize) {
+        Update.printError(Serial);
+      }
+    } else if (upload.status == UPLOAD_FILE_END) {
+      if (Update.end(true)) { //true to set the size to the current progress
+        Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
+      } else {
+        Update.printError(Serial);
+      }
+      Serial.setDebugOutput(false);
+    } else {
+      Serial.printf("Update Failed Unexpectedly (likely broken connection): status=%d\n", upload.status);
+    }
+  });
+
+
+
+
+
+
+
+
+
+
 
   server.on("/testColors", []() {
     handleTestColors();
   });
 
- 
+
   server.onNotFound(handleNotFound);
 }
 
@@ -142,10 +190,10 @@ void handleTestColors()
 
   char body[100] = "Running Test";
   server.send(200, "text/html", body);
-    digitalWrite(green, LOW);
-    digitalWrite(red, LOW);
-    digitalWrite(blue, LOW);
-    digitalWrite(kIrLed, LOW);
+  digitalWrite(green, LOW);
+  digitalWrite(red, LOW);
+  digitalWrite(blue, LOW);
+  digitalWrite(kIrLed, LOW);
 
   Serial.println("color seq");
   for (int k = 0; k < 15; k++) {
@@ -159,7 +207,7 @@ void handleTestColors()
     digitalWrite(red, LOW);
     vTaskDelay(500);
     digitalWrite(green, HIGH);
-    vTaskDelay(500);    
+    vTaskDelay(500);
     digitalWrite(green, LOW);
     vTaskDelay(500);
     digitalWrite( kIrLed, HIGH);

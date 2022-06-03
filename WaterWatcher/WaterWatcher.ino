@@ -11,7 +11,7 @@
 
 #define RELEASE true
 #define SERVER
-const int FW_VERSION = 2020080701;
+const int FW_VERSION = 2022060306;
 int DEBUGLEVEL = 2;     // set between 0 and 5. This value will be overridden by dynamic network configuration json if it has a higher value
 
 
@@ -223,7 +223,7 @@ int maxEEPROMMessageLength = 1000;
 //////////////////////// WATCHGDOG SECTIO1N //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-const int wdtTimeout = 22000; //time in ms to trigger the watchdog // NOTE: less than that, on upgrade it barks. alternatively, kill dog before update
+const int wdtTimeout = 60000; //time in ms to trigger the watchdog // NOTE: less than that, on upgrade it barks. alternatively, kill dog before update
 hw_timer_t *timer = NULL;
 RTC_DATA_ATTR byte bootCount = 0;
 RTC_DATA_ATTR time_t rightNow;

@@ -20,11 +20,33 @@ void IRAM_ATTR waterSensorRead() {
 
     if (waterClicksInx == logChunkSize)
     {
-      String diffs = "WaterReads:";
-      for (int i = 0; i < waterClicksInx; i++) {
-        diffs = diffs + waterClicks[i] + "$";
+      if (DEBUGLEVEL > 3) {
+        String diffs = "WaterReads:";
+        for (int i = 0; i < waterClicksInx; i++) {
+          diffs = diffs + waterClicks[i] + "$";
+        }
       }
-      logThis(0, diffs, 2);
+
+      int minWater = 9999; int maxWater = 0; int avgWater = 0; float varWater = 0; float stddev = 0; int totalWater = 0; double varWaterAcc = 0;
+
+      for (int i = 0; i < waterClicksInx; i++) {
+        maxWater = (waterClicks[i] > maxWater) ? waterClicks[i] : maxWater;
+        minWater = (waterClicks[i] < minWater) ? waterClicks[i] : minWater;
+        totalWater = totalWater + waterClicks[i];
+      }
+      avgWater = totalWater / waterClicksInx;
+
+      for (int i = 0; i < waterClicksInx; i++) {
+        varWaterAcc = varWaterAcc + (waterClicks[i] - avgWater) * (waterClicks[i] - avgWater) ;
+      }
+      Serial.print(varWaterAcc);
+      varWater = varWater / (waterClicksInx);
+      stddev = sqrt(varWater);
+
+      String waterLogging = "min " + String(minWater) + " max " + String(maxWater) + " size " + String(waterClicksInx) + " avg " + String(avgWater)  + " var " + String(varWater) + " stddev " + String(stddev);
+      Serial.println(waterLogging);
+
+      logThis(0, waterLogging, 2);
       waterClicksInx = 0;
     }
     return;
