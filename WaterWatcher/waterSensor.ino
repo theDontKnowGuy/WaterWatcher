@@ -27,7 +27,7 @@ void IRAM_ATTR waterSensorRead() {
         }
       }
 
-      int minWater = 9999; int maxWater = 0; int avgWater = 0; float varWater = 0; float stddev = 0; int totalWater = 0; double varWaterAcc = 0;
+      int minWater = 9999; int maxWater = 0; int avgWater = 0; int varWater = 0; int stddev = 0; int totalWater = 0; int varWaterAcc = 0;
 
       for (int i = 0; i < waterClicksInx; i++) {
         maxWater = (waterClicks[i] > maxWater) ? waterClicks[i] : maxWater;
@@ -39,8 +39,7 @@ void IRAM_ATTR waterSensorRead() {
       for (int i = 0; i < waterClicksInx; i++) {
         varWaterAcc = varWaterAcc + (waterClicks[i] - avgWater) * (waterClicks[i] - avgWater) ;
       }
-      Serial.print(varWaterAcc);
-      varWater = varWater / (waterClicksInx);
+      varWater = varWaterAcc / waterClicksInx;
       stddev = sqrt(varWater);
 
       String waterLogging = "min " + String(minWater) + " max " + String(maxWater) + " size " + String(waterClicksInx) + " avg " + String(avgWater)  + " var " + String(varWater) + " stddev " + String(stddev);

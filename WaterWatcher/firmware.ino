@@ -1,4 +1,4 @@
-int checkForFirmwareUpdates(int newFWVersion)
+int checkForFirmwareUpdates(long newFWVersion)
 {
 
   logThis(3, "Checking for firmware updates.", 2);

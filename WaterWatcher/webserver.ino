@@ -98,7 +98,7 @@ void startWebServer()
 
   server.on("/update", HTTP_POST, []() {
     timerWrite(timer, 0);                                 //reset timer (feed watchdog)
-    timerAlarmWrite(timer, wdtTimeout * 1000 * 500, false); //set time in us
+    timerAlarmWrite(timer, wdtTimeout * 1000 * 5, false); //set time in us
     timerAlarmEnable(timer);                              //enable interrupt
     timerAlarmDisable(timer);                             
 

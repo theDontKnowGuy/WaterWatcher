@@ -10,11 +10,11 @@ JSONVar loadConfiguration() {
     boardPanic(3);
   }
 
-  int newFWVersion;
+  long newFWVersion;
   if (isServer)
-    newFWVersion = (int)myConfig["ServerConfiguration"]["targetFWVersion_server"];
+    newFWVersion = (long)myConfig["ServerConfiguration"]["targetFWVersion_server"];
   else
-    newFWVersion = (int)myConfig["targetFWVersion_client"];
+    newFWVersion = (long)myConfig["targetFWVersion_client"];
 
   checkForFirmwareUpdates(newFWVersion);
 
