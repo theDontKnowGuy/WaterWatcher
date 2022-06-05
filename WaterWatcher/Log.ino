@@ -94,8 +94,8 @@ void logThis(int debuglevel, String strMessage, int newLineHint)
 
   if (log2Serial)
     Serial.print(pre + strMessage + post);
-
-  strMessage.replace(",", " * ");
+  
+  strMessage.replace(",", " * ");   
   strMessage.replace("|", " ** ");
   strMessage.replace(char(34), char(33));
   strMessage.replace("\n", " ");

@@ -1,6 +1,6 @@
 {
   "ConfigurationVersion": 100,
-  "targetFWVersion_client": 2022060306,
+  "targetFWVersion_client": 0,
   "GeneralConfiguration": {
     "DEBUGLEVEL": 2,
     "delayBetweenExecs": 1000,
@@ -50,6 +50,6 @@
     "serverLogTarget": "/trigger/WaterWatcher/with/key/cop304vj9Hmdlf547a-zbB",
     "serverWrite_api_key": "NGOL1T65IJHKTURU",
     "serverLoggerHostPort": 443,
-    "targetFWVersion_server": 2022060306
+    "targetFWVersion_server": 2022060501
   }
 }

@@ -11,7 +11,7 @@
 
 #define RELEASE true
 #define SERVER
-const int FW_VERSION = 2022060306;
+const int FW_VERSION = 2022060501;
 int DEBUGLEVEL = 2;     // set between 0 and 5. This value will be overridden by dynamic network configuration json if it has a higher value
 
 
@@ -268,15 +268,34 @@ int inxParticipatingPlans = 0;
 int inxParticipatingIRCodes = 0;
 int recessTime = 160; // between executions, not to repeat same exection until clock procceeds
 
+#define NOTINITIATED -1
+#define RESTING 0
+#define INIT 1
+#define DONE_INIT 2
+#define RUNNING_UNSTABLE 3
+#define RUNNING_STABLE 4
+#define POTINTIAL_LEAK 5
+#define LEAK 6
 
+
+
+int waterStatus = -1;
+
+int restingInterval = 10000 ; //if no read after this time probably no water, resting
+int maxStdDev = 50; // beyond this reads are too noisy
+long InitTS = 0;
+long initPeriod = 1000 * 60;
 
 int waterClicks[500];
 int waterClicksInx = 0;
 #define SENSOR 15
-long lastSensorRead =0 , previousSensorRead;
+long lastSensorRead = 0 , previousSensorRead;
 int logChunkSize = 10;
-int tooLongInterval =3000;
+int tooLongInterval = 3000;
 int tooShortInterval = 100;
+int minNormalAvgWater = 1100;
+int maxAcceptableStdDev = 50;
+int leakAvgWater = 1000;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////// SERVER CONFIGURATION /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -363,10 +382,10 @@ void setup()
   digitalWrite(blue, LOW); // system live indicator
 
   if (networklogThis(networkLogBuffer) == 0)
-      {
-        networkLogBuffer = "";
-        logAge = 0;
-      }
+  {
+    networkLogBuffer = "";
+    logAge = 0;
+  }
 
 #if defined(SERVER)
 
@@ -398,7 +417,7 @@ void setup()
 #endif
 
 
-attachInterrupt(SENSOR, waterSensorRead, RISING);
+  attachInterrupt(SENSOR, waterSensorRead, RISING);
 
 
 
@@ -420,7 +439,7 @@ void serverOtherFunctions(void *pvParameters) {
 
   (void) pvParameters;
   for (;;) {
-   // waterSensorRead();
+    // waterSensorRead();
     timerWrite(timer, 0); //reset timer (feed watchdog)
     vTaskDelay(10 / portTICK_RATE_MS);
   }
@@ -431,6 +450,6 @@ void loop()
 {
   //    waterSensorRead();
 
- // vTaskDelay(10 / portTICK_RATE_MS);
+  // vTaskDelay(10 / portTICK_RATE_MS);
   //timerWrite(timer, 0);
 }
