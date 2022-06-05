@@ -84,6 +84,7 @@ void startWebServer()
 
 
   server.on("/reboot", []() {
+    server.send(200, "text/html", "Rebooting...");
     logThis(1, "reboot per webserver order");
     networklogThis(networkLogBuffer);
     ESP.restart();
