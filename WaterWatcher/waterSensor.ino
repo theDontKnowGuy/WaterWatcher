@@ -13,7 +13,7 @@ void IRAM_ATTR waterSensorRead() {
     if (diff < tooShortInterval) return;
 
     if (waterStatus == RESTING || waterStatus == NOTINITIATED ) {
-      waterStatus == INIT;
+      waterStatus = INIT;
       InitTS = millis();
     }
 
@@ -47,18 +47,18 @@ void IRAM_ATTR waterSensorRead() {
       varWater = varWaterAcc / waterClicksInx;
       stddev = sqrt(varWater);
 
+      if ((waterStatus == INIT) && (millis() - InitTS < initPeriod * 1000)) waterStatus = DONE_INIT;
 
-      if ((waterStatus == INIT) && (millis() - InitTS < initPeriod)) waterStatus = DONE_INIT;
-
-      if ((waterStatus == DONE_INIT) && (stddev < maxStdDev)) {
-
+      if (((waterStatus == DONE_INIT) || (waterStatus == RUNNING_UNSTABLE) || (waterStatus == LEAK) || (waterStatus = POTINTIAL_LEAK)) && (stddev < maxStdDev))
+      {
         if (avgWater > minNormalAvgWater) waterStatus = RUNNING_STABLE;
-        
-        if (avgWater < leakAvgWater) waterStatus = LEAK;
-        else waterStatus = POTINTIAL_LEAK;
 
-        if (avgWater > maxAcceptableStdDev ) waterStatus = RUNNING_UNSTABLE;
-        }
+        if (avgWater < leakAvgWater) waterStatus = LEAK;
+        
+        if ((avgWater < leakAvgWater) &&  (avgWater > minNormalAvgWater)) waterStatus = POTINTIAL_LEAK;
+
+        if (stddev > maxAcceptableStdDev ) waterStatus = RUNNING_UNSTABLE;
+      }
 
       String waterLogging = "stats#" + String(minWater) + "#" + String(maxWater) + "#" + String(waterClicksInx) + "#" + String(avgWater)  + "#" + String(varWater) + "#" + String(stddev) + "#" + waterStatus;
 

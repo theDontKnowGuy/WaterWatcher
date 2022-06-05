@@ -45,7 +45,7 @@
     "ServerConfigurationRefreshRate": 12000,
     "maxLogAge": 6000,
     "recessTime": 6000,
-    "loggingType": 3,
+    "loggingType": 2,
     "serverLoggerHost": "maker.ifttt.com",
     "serverLogTarget": "/trigger/WaterWatcher/with/key/cop304vj9Hmdlf547a-zbB",
     "serverWrite_api_key": "NGOL1T65IJHKTURU",
