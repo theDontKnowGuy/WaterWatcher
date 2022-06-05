@@ -11,7 +11,7 @@
 
 #define RELEASE true
 #define SERVER
-const int FW_VERSION = 2022060501;
+const int FW_VERSION = 2022060507;
 int DEBUGLEVEL = 2;     // set between 0 and 5. This value will be overridden by dynamic network configuration json if it has a higher value
 
 
@@ -278,8 +278,7 @@ int recessTime = 160; // between executions, not to repeat same exection until c
 #define LEAK 6
 
 
-
-int waterStatus = -1;
+int waterStatus = NOTINITIATED;
 
 int restingInterval = 10000 ; //if no read after this time probably no water, resting
 int maxStdDev = 50; // beyond this reads are too noisy
