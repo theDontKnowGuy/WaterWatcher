@@ -49,7 +49,7 @@
     "serverLoggerHost": "maker.ifttt.com",
     "serverLogTarget": "/trigger/WaterWatcher/with/key/cop304vj9Hmdlf547a-zbB",
     "serverWrite_api_key": "NGOL1T65IJHKTURU",
-    "serverLoggerHostPort": 443,
-    "targetFWVersion_server": 2022060507
+    "targetFWVersion_server": 2022060507,
+    "serverLoggerHostPort": 443
   }
 }
