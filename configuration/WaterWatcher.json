@@ -43,7 +43,7 @@
 
   "ServerConfiguration": {
     "ServerConfigurationRefreshRate": 12000,
-    "maxLogAge": 6000,
+    "maxLogAge": 6100,
     "recessTime": 6000,
     "loggingType": 3,
     "serverLoggerHost": "maker.ifttt.com",
