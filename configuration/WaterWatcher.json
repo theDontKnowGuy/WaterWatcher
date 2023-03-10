@@ -1,7 +1,7 @@
 {
   "ConfigurationVersion": 100,
   "targetFWVersion_client": 0,
-  "GeneralConfiguration": {
+
     "DEBUGLEVEL": 2,
     "delayBetweenExecs": 1000,
     "sleepRandFactor": 120,
@@ -19,8 +19,12 @@
     "loggingType": 3,
     "red": 2,
     "green": 17,
-    "blue": 12
-  },
+    "blue": 12,
+    "mqtt_server_host": "192.168.1.200",
+    "mqtt_server_port": 1883,
+    "mqtt_subscribe_topic": "AE_C3_events",
+    "mqtt_publish_topic": "AE_C3_events"
+  ,
 
   "sleepPlans": [
     {
