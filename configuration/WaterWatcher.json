@@ -2,58 +2,26 @@
   "ConfigurationVersion": 100,
   "targetFWVersion_client": 2023031201,
   "firmware_update_url": "https://github.com/theDontKnowGuy/WaterWatcher/raw/main/fota/",
-    "DEBUGLEVEL": 2,
-    "delayBetweenExecs": 1000,
-    "sleepRandFactor": 120,
-    "sleepAfterExec": 3600,
-    "sleepAfterPanic": 3600,
-    "daylightOffset_sec": 0,
-    "gmtOffset_sec": 10800,
-    "dataUpdateHost": "raw.githubusercontent.com",
-    "dataUpdateURI": "/theDontKnowGuy/WaterWatcher/master/configuration/WaterWatcher.json",
-    "dataUpdatePort": 443,
-    "loggerHost": "maker.ifttt.com",
-    "logTarget": "/trigger/WaterWatcher/with/key/cop304vj9Hmdlf547a-zbB",
-    "write_api_key": "NGOL1T65IJHKTURU",
-    "loggerHostPort": 443,
-    "loggingType": 3,
-    "red": 2,
-    "green": 17,
-    "blue": 12,
-    "mqtt_server_host": "192.168.1.200",
-    "mqtt_server_port": 1883,
-    "mqtt_subscribe_topic": "AE_C3_events",
-    "mqtt_publish_topic": "AE_C3_events"
-  ,
-
-  "sleepPlans": [
-    {
-      "planStartHour": 1,
-      "sleepTime": 10800
-    },
-    {
-      "planStartHour": 6,
-      "sleepTime": 10800
-    },
-    {
-      "planStartHour": 14,
-      "sleepTime": 10800
-    },
-    {
-      "planStartHour": 19,
-      "sleepTime": 10800
-    }
-  ],
-
-  "ServerConfiguration": {
-    "ServerConfigurationRefreshRate": 12000,
-    "maxLogAge": 6100,
-    "recessTime": 6000,
-    "loggingType": 3,
-    "serverLoggerHost": "maker.ifttt.com",
-    "serverLogTarget": "/trigger/WaterWatcher/with/key/cop304vj9Hmdlf547a-zbB",
-    "serverWrite_api_key": "NGOL1T65IJHKTURU",
-    "serverLoggerHostPort": 443,
-    "targetFWVersion_server": 2022060507
-  }
+  "DEBUGLEVEL": 2,
+  "delayBetweenExecs": 1000,
+  "sleepRandFactor": 120,
+  "sleepAfterExec": 3600,
+  "sleepAfterPanic": 3600,
+  "daylightOffset_sec": 0,
+  "gmtOffset_sec": 10800,
+  "dataUpdateHost": "raw.githubusercontent.com",
+  "dataUpdateURI": "/theDontKnowGuy/WaterWatcher/master/configuration/WaterWatcher.json",
+  "dataUpdatePort": 443,
+  "loggerHost": "maker.ifttt.com",
+  "logTarget": "/trigger/WaterWatcher/with/key/cop304vj9Hmdlf547a-zbB",
+  "write_api_key": "NGOL1T65IJHKTURU",
+  "loggerHostPort": 443,
+  "loggingType": 3,
+  "red": 2,
+  "green": 17,
+  "blue": 12,
+  "mqtt_server_host": "192.168.1.200",
+  "mqtt_server_port": 1883,
+  "mqtt_subscribe_topic": "AE_C3_events",
+  "mqtt_publish_topic": "AE_C3_events"
 }
