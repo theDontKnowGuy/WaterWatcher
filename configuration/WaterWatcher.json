@@ -1,6 +1,6 @@
 {
   "ConfigurationVersion": 100,
-  "targetFWVersion_client": 2023040602,
+  "targetFWVersion_client": 2023040603,
   "firmware_update_url": "https://github.com/theDontKnowGuy/WaterWatcher/raw/main/fota/",
   "DEBUGLEVEL": 2,
   "delayBetweenExecs": 1000,
